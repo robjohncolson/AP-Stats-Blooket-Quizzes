@@ -160,11 +160,7 @@ def suggest_chapter(file_path):
     file_extension = os.path.splitext(file_path)[1].lower()
     content = ""
     
-    if file_extension in ['.png', '.jpg', '.jpeg', '.webp']:
-        content = extract_text_from_image(file_path)
-    elif file_extension == '.pdf':
-        content = extract_text_from_pdf(file_path)
-    elif file_extension in ['.csv', '.xlsx', '.txt']:
+    if file_extension in ['.csv', '.xlsx', '.txt']:
         try:
             with open(file_path, 'r') as file:
                 content = file.read()
