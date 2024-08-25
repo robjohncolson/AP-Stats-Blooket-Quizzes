@@ -110,20 +110,20 @@ def create_database():
     conn = sqlite3.connect('file_chapters.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS file_chapters
-                 (filename TEXT PRIMARY KEY, chapter INTEGER)''')
+                 (filename TEXT PRIMARY KEY, chapter INTEGER, unsure INTEGER)''')
     conn.commit()
     return conn
 
 def get_chapter_from_db(conn, filename):
     c = conn.cursor()
-    c.execute("SELECT chapter FROM file_chapters WHERE filename = ?", (filename,))
+    c.execute("SELECT chapter, unsure FROM file_chapters WHERE filename = ?", (filename,))
     result = c.fetchone()
-    return result[0] if result else None
+    return result if result else (None, None)
 
-def save_chapter_to_db(conn, filename, chapter):
+def save_chapter_to_db(conn, filename, chapter, unsure=0):
     c = conn.cursor()
-    c.execute("INSERT OR REPLACE INTO file_chapters (filename, chapter) VALUES (?, ?)",
-              (filename, chapter))
+    c.execute("INSERT OR REPLACE INTO file_chapters (filename, chapter, unsure) VALUES (?, ?, ?)",
+              (filename, chapter, unsure))
     conn.commit()
 
 
@@ -254,49 +254,58 @@ def get_chapter_assignments(groups, media_dir):
         print(f"\nAssigning chapters for group {group + 1}:")
         for file, suggested_chapter in files:
             file_path = os.path.join(media_dir, file)
-            db_chapter = get_chapter_from_db(conn, file)
+            db_chapter, db_unsure = get_chapter_from_db(conn, file)
             
-            if db_chapter:
-                assignments[file] = db_chapter
-                print(f"Chapter {db_chapter} assigned to {file} (from database)")
-                continue
+            if db_chapter is not None:
+                if db_unsure:
+                    print(f"File {file} was previously marked as unsure.")
+                    generate_preview(file_path)
+                else:
+                    assignments[file] = db_chapter
+                    print(f"Chapter {db_chapter} assigned to {file} (from database)")
+                    continue
             
-            if suggested_chapter is None:
+            if suggested_chapter is None or db_unsure:
                 generate_preview(file_path)
                 
                 while True:
                     try:
-                        choice = input(f"Enter chapter number (1-26) for {file}, or 'd' to delete: ")
+                        choice = input(f"Enter chapter number (1-26) for {file}, 'u' for unsure, or 'd' to delete: ")
                         
                         if choice.lower() == 'd':
                             os.remove(file_path)
                             print(f"File {file} has been deleted.")
+                            break
+                        elif choice.lower() == 'u':
+                            save_chapter_to_db(conn, file, None, unsure=1)
+                            print(f"File {file} marked as unsure.")
                             break
                         else:
                             chapter = int(choice)
                         
                         if 1 <= chapter <= 26:
                             assignments[file] = chapter
-                            save_chapter_to_db(conn, file, chapter)
+                            save_chapter_to_db(conn, file, chapter, unsure=0)
                             break
                         else:
                             print("Please enter a number between 1 and 26.")
                     except ValueError:
-                        print("Please enter a valid number or 'd' to delete.")
+                        print("Please enter a valid number, 'u' for unsure, or 'd' to delete.")
             else:
                 assignments[file] = suggested_chapter
-                save_chapter_to_db(conn, file, suggested_chapter)
+                save_chapter_to_db(conn, file, suggested_chapter, unsure=0)
     
     conn.close()
     return assignments
 
-def move_files_to_chapters(directory, assignments):
+def move_files_to_chapters(media_dir, assignments):
     for file, chapter in assignments.items():
-        chapter_dir = os.path.join(directory, f"Ch{chapter}")
-        os.makedirs(chapter_dir, exist_ok=True)
-        src = os.path.join(directory, file)
-        dst = os.path.join(chapter_dir, file)
-        shutil.move(src, dst)
+        if chapter is not None:  # Skip unsure files
+            chapter_dir = os.path.join(media_dir, f"Ch{chapter}")
+            os.makedirs(chapter_dir, exist_ok=True)
+            src = os.path.join(media_dir, file)
+            dst = os.path.join(chapter_dir, file)
+            shutil.move(src, dst)
 
 def show_organization_result(directory):
     for chapter in range(1, 27):
