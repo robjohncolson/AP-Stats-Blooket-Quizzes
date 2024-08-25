@@ -19,9 +19,23 @@ import shutil
 #for adding a finer grained control of time so that files are grouped with more resolution.
 from datetime import datetime, timedelta
 
+
+import os
+import re
+from collections import defaultdict
+from datetime import datetime
+import shutil
+import sqlite3
+import pandas as pd
+import matplotlib.pyplot as plt
+from tabulate import tabulate
+from PIL import Image
+import fitz  # PyMuPDF library for PDF handling
+
+
 #database functionality
 import sqlite3
-import pytesseract
+#import pytesseract
 from pdf2image import convert_from_path
 
 #xlsx and csv preview functionality.
@@ -56,6 +70,7 @@ def manage_database():
             print("Using existing database.")
     else:
         print("No existing database found. Creating a new one.")
+
 
 
 #fine grained time based grouping of files.
@@ -111,26 +126,6 @@ def save_chapter_to_db(conn, filename, chapter):
               (filename, chapter))
     conn.commit()
 
-def extract_text_from_image(file_path):
-    try:
-        return pytesseract.image_to_string(Image.open(file_path))
-    except pytesseract.TesseractNotFoundError:
-        print("Tesseract is not installed or not in PATH. OCR functionality is disabled.")
-        return ""
-    except Exception as e:
-        print(f"Error extracting text from image {file_path}: {str(e)}")
-        return ""
-
-def extract_text_from_pdf(file_path):
-    try:
-        pages = convert_from_path(file_path, first_page=1, last_page=2)
-        text = ""
-        for page in pages:
-            text += pytesseract.image_to_string(page)
-        return text
-    except Exception as e:
-        print(f"Error extracting text from PDF {file_path}: {str(e)}")
-        return ""
 
 def suggest_chapter(file_path):
     file_extension = os.path.splitext(file_path)[1].lower()
@@ -243,6 +238,7 @@ def extract_chapter_number(filename):
     match = re.search(r'ch(?:apter)?[_\s]?(\d+)', filename, re.IGNORECASE)
     return int(match.group(1)) if match else None
 
+
 def read_directory_contents(directory):
     return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 
@@ -266,34 +262,30 @@ def get_chapter_assignments(groups, media_dir):
                 continue
             
             if suggested_chapter is None:
-                suggested_chapter = suggest_chapter(file_path)
-            
-            generate_preview(file_path)
-            
-            while True:
-                try:
-                    if suggested_chapter:
-                        choice = input(f"Enter chapter number (1-26) for {file}, 'd' to delete, or press Enter for [Suggested: {suggested_chapter}]: ")
-                    else:
+                generate_preview(file_path)
+                
+                while True:
+                    try:
                         choice = input(f"Enter chapter number (1-26) for {file}, or 'd' to delete: ")
-                    
-                    if choice.lower() == 'd':
-                        os.remove(file_path)
-                        print(f"File {file} has been deleted.")
-                        break
-                    elif choice == '' and suggested_chapter:
-                        chapter = suggested_chapter
-                    else:
-                        chapter = int(choice)
-                    
-                    if 1 <= chapter <= 26:
-                        assignments[file] = chapter
-                        save_chapter_to_db(conn, file, chapter)
-                        break
-                    else:
-                        print("Please enter a number between 1 and 26.")
-                except ValueError:
-                    print("Please enter a valid number or 'd' to delete.")
+                        
+                        if choice.lower() == 'd':
+                            os.remove(file_path)
+                            print(f"File {file} has been deleted.")
+                            break
+                        else:
+                            chapter = int(choice)
+                        
+                        if 1 <= chapter <= 26:
+                            assignments[file] = chapter
+                            save_chapter_to_db(conn, file, chapter)
+                            break
+                        else:
+                            print("Please enter a number between 1 and 26.")
+                    except ValueError:
+                        print("Please enter a valid number or 'd' to delete.")
+            else:
+                assignments[file] = suggested_chapter
+                save_chapter_to_db(conn, file, suggested_chapter)
     
     conn.close()
     return assignments
@@ -319,9 +311,9 @@ def main():
     manage_database()
     
     media_dir = "media"
-        
+    
     # Step 1: Read directory contents
-    files = read_directory_contents(media_dir)
+    files = [f for f in os.listdir(media_dir) if os.path.isfile(os.path.join(media_dir, f))]
     
     # Step 2: Group files by creation time
     groups = group_files_by_creation_time(media_dir, files)
@@ -340,7 +332,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 
