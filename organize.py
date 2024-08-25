@@ -109,15 +109,31 @@ def show_groups(groups):
 def create_database():
     conn = sqlite3.connect('file_chapters.db')
     c = conn.cursor()
+    
+    # Create the table if it doesn't exist
     c.execute('''CREATE TABLE IF NOT EXISTS file_chapters
-                 (filename TEXT PRIMARY KEY, chapter INTEGER, unsure INTEGER)''')
+                 (filename TEXT PRIMARY KEY, chapter INTEGER)''')
+    
+    # Check if the 'unsure' column exists, and add it if it doesn't
+    c.execute("PRAGMA table_info(file_chapters)")
+    columns = [column[1] for column in c.fetchall()]
+    if 'unsure' not in columns:
+        c.execute("ALTER TABLE file_chapters ADD COLUMN unsure INTEGER DEFAULT 0")
+    
     conn.commit()
     return conn
 
 def get_chapter_from_db(conn, filename):
     c = conn.cursor()
-    c.execute("SELECT chapter, unsure FROM file_chapters WHERE filename = ?", (filename,))
-    result = c.fetchone()
+    try:
+        c.execute("SELECT chapter, unsure FROM file_chapters WHERE filename = ?", (filename,))
+        result = c.fetchone()
+    except sqlite3.OperationalError:
+        # If 'unsure' column doesn't exist, fall back to just getting the chapter
+        c.execute("SELECT chapter FROM file_chapters WHERE filename = ?", (filename,))
+        result = c.fetchone()
+        if result:
+            result = (result[0], 0)  # Assume not unsure if column doesn't exist
     return result if result else (None, None)
 
 def save_chapter_to_db(conn, filename, chapter, unsure=0):
@@ -153,15 +169,15 @@ def suggest_chapter(file_path):
     
     return None
 
-def get_chapter_assignments(groups, media_dir):
+def get_chapter_assignments(groups, media_dir, conn):
     assignments = {}
-    conn = create_database()
     
-    for date, files in groups.items():
-        print(f"\nAssigning chapters for group {date}:")
+    for group, files in groups.items():
+        print(f"\nAssigning chapters for group {group + 1}:")
         for file, suggested_chapter in files:
             file_path = os.path.join(media_dir, file)
-            db_chapter = get_chapter_from_db(conn, file)
+            db_chapter, db_unsure = get_chapter_from_db(conn, file)
+            
             
             if db_chapter:
                 assignments[file] = db_chapter
@@ -318,6 +334,7 @@ def show_organization_result(directory):
 
 def main():
     manage_database()
+    conn = create_database()  # This will add the 'unsure' column if it doesn't exist
     
     media_dir = "media"
     
@@ -331,13 +348,16 @@ def main():
     show_groups(groups)
     
     # Step 4: Get chapter assignments from user
-    assignments = get_chapter_assignments(groups, media_dir)
+ # Pass the connection to get_chapter_assignments
+    assignments = get_chapter_assignments(groups, media_dir, conn)
     
     # Step 5: Move files to appropriate chapters
     move_files_to_chapters(media_dir, assignments)
     
     # Step 6: Show organization result
     show_organization_result(media_dir)
+
+    conn.close()
 
 if __name__ == "__main__":
     main()
