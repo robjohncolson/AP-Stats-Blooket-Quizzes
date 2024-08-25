@@ -73,14 +73,21 @@ def manage_database():
 
 
 
-#fine grained time based grouping of files.
-def group_files_by_creation_time(directory, files, target_groups=26):
+def group_files_by_creation_time(directory, files, target_groups=24):
     file_times = []
     for file in files:
-        creation_time = os.path.getctime(os.path.join(directory, file))
-        file_times.append((file, datetime.fromtimestamp(creation_time)))
+        file_path = os.path.join(directory, file)
+        creation_time = os.path.getctime(file_path)
+        modification_time = os.path.getmtime(file_path)
+        # Use the later of creation or modification time
+        file_time = max(creation_time, modification_time)
+        file_times.append((file, datetime.fromtimestamp(file_time)))
     
-    file_times.sort(key=lambda x: x[1])  # Sort by creation time
+    file_times.sort(key=lambda x: x[1])  # Sort by time
+    
+    if len(file_times) < target_groups:
+        print(f"Warning: Only {len(file_times)} files found. Creating {len(file_times)} groups instead of {target_groups}.")
+        target_groups = len(file_times)
     
     total_duration = (file_times[-1][1] - file_times[0][1]).total_seconds()
     group_duration = total_duration / target_groups
@@ -94,16 +101,22 @@ def group_files_by_creation_time(directory, files, target_groups=26):
             current_group += 1
             current_group_start = time
         
-        chapter = extract_chapter_number(file)
-        groups[current_group].append((file, chapter))
+        if current_group < target_groups:
+            groups[current_group].append((file, time))
+        else:
+            groups['undetermined'].append((file, time))
     
     return groups
 
 def show_groups(groups):
     for group, files in groups.items():
-        print(f"\nGroup {group + 1}:")
-        for file, chapter in files:
-            print(f"  - {file} (Suggested chapter: {chapter if chapter else 'Unknown'})")
+        if group == 'undetermined':
+            print("\nUndetermined Group:")
+        else:
+            print(f"\nGroup {group + 1}:")
+        for file, time in files:
+            print(f"  - {file}")
+            print(f"    (Last modified: {time.strftime('%Y-%m-%d %H:%M:%S')})")
 
 #database functionality
 def create_database():
@@ -343,14 +356,14 @@ def show_organization_result(directory):
 
 def main():
     manage_database()
-    conn = create_database()  # This will add the 'unsure' column if it doesn't exist
+    conn = create_database()
     
     media_dir = "media"
     
     # Step 1: Read directory contents
     files = [f for f in os.listdir(media_dir) if os.path.isfile(os.path.join(media_dir, f))]
     
-    # Step 2: Group files by creation time
+    # Step 2: Group files by creation/modification time
     groups = group_files_by_creation_time(media_dir, files)
     
     # Step 3: Show groups to user
