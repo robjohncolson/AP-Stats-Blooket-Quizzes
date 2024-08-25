@@ -12,6 +12,11 @@ __purpose__ = "Organize files in a directory by chapter"
 #We will then show the user the organization of the files.
 #We will ask the user to confirm the organization of the files, each step of the way.
 
+#xlsx and csv preview functionality.
+import pandas as pd
+import matplotlib.pyplot as plt
+from tabulate import tabulate
+
 #For adding png, webp, pdf preview functionality.
 import io
 from PIL import Image
@@ -44,6 +49,17 @@ def generate_preview(file_path):
         plt.axis('off')
         plt.show()
         doc.close()
+    elif file_extension in ['.csv', '.xlsx']:
+        try:
+            if file_extension == '.csv':
+                df = pd.read_csv(file_path, nrows=5)
+            else:  # .xlsx
+                df = pd.read_excel(file_path, nrows=5)
+            print(f"\nPreview of {os.path.basename(file_path)}:")
+            print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+            print("...")
+        except Exception as e:
+            print(f"Error previewing {file_path}: {str(e)}")
     else:
         print(f"Preview not available for {file_path}")
 
