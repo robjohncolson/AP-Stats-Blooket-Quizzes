@@ -262,9 +262,8 @@ def read_directory_contents(directory):
 
 #Modified for adding png, webp, pdf preview functionality. *(now with delete!)
 
-def get_chapter_assignments(groups, media_dir):
+def get_chapter_assignments(groups, media_dir, conn):
     assignments = {}
-    conn = create_database()
     
     for group, files in groups.items():
         print(f"\nAssigning chapters for group {group + 1}:")
@@ -311,8 +310,8 @@ def get_chapter_assignments(groups, media_dir):
                 assignments[file] = suggested_chapter
                 save_chapter_to_db(conn, file, suggested_chapter, unsure=0)
     
-    conn.close()
     return assignments
+
 
 def move_files_to_chapters(media_dir, assignments):
     for file, chapter in assignments.items():
@@ -348,7 +347,6 @@ def main():
     show_groups(groups)
     
     # Step 4: Get chapter assignments from user
- # Pass the connection to get_chapter_assignments
     assignments = get_chapter_assignments(groups, media_dir, conn)
     
     # Step 5: Move files to appropriate chapters
@@ -358,7 +356,7 @@ def main():
     show_organization_result(media_dir)
 
     conn.close()
-
+    
 if __name__ == "__main__":
     main()
 
