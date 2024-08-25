@@ -245,9 +245,19 @@ def generate_preview(file_path):
             print("...")
         except Exception as e:
             print(f"Error previewing {file_path}: {str(e)}")
+    elif file_extension == '.txt':
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.readlines()
+                print(f"\nPreview of {os.path.basename(file_path)}:")
+                for line in content[:10]:  # Display first 10 lines
+                    print(line.strip())
+                if len(content) > 10:
+                    print("...")
+        except Exception as e:
+            print(f"Error previewing text file {file_path}: {str(e)}")
     else:
         print(f"Preview not available for {file_path}")
-
 #For the main functionality.
 
 def extract_chapter_number(filename):
@@ -356,7 +366,7 @@ def main():
     show_organization_result(media_dir)
 
     conn.close()
-    
+
 if __name__ == "__main__":
     main()
 
