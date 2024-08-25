@@ -72,7 +72,7 @@ def show_groups(groups):
             print(f"  - {file} (Suggested chapter: {chapter if chapter else 'Unknown'})")
 
 #Modified for adding png, webp, pdf preview functionality.
-def get_chapter_assignments(groups):
+def get_chapter_assignments(groups, media_dir):
     assignments = {}
     for date, files in groups.items():
         print(f"\nAssigning chapters for group {date}:")
@@ -125,7 +125,7 @@ def main():
     show_groups(groups)
     
     # Step 4: Get chapter assignments from user
-    assignments = get_chapter_assignments(groups)
+    assignments = get_chapter_assignments(groups, media_dir)
     
     # Step 5: Move files to appropriate chapters
     move_files_to_chapters(media_dir, assignments)
