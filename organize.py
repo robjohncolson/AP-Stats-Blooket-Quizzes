@@ -12,6 +12,9 @@ __purpose__ = "Organize files in a directory by chapter"
 #We will then show the user the organization of the files.
 #We will ask the user to confirm the organization of the files, each step of the way.
 
+#for adding a finer grained control of time so that files are grouped with more resolution.
+from datetime import datetime, timedelta
+
 #database functionality
 import sqlite3
 import pytesseract
@@ -34,6 +37,39 @@ import shutil
 from datetime import datetime
 from collections import defaultdict
 
+
+
+#fine grained time based grouping of files.
+def group_files_by_creation_time(directory, files, target_groups=26):
+    file_times = []
+    for file in files:
+        creation_time = os.path.getctime(os.path.join(directory, file))
+        file_times.append((file, datetime.fromtimestamp(creation_time)))
+    
+    file_times.sort(key=lambda x: x[1])  # Sort by creation time
+    
+    total_duration = (file_times[-1][1] - file_times[0][1]).total_seconds()
+    group_duration = total_duration / target_groups
+    
+    groups = defaultdict(list)
+    current_group_start = file_times[0][1]
+    current_group = 0
+    
+    for file, time in file_times:
+        if (time - current_group_start).total_seconds() > group_duration:
+            current_group += 1
+            current_group_start = time
+        
+        chapter = extract_chapter_number(file)
+        groups[current_group].append((file, chapter))
+    
+    return groups
+
+def show_groups(groups):
+    for group, files in groups.items():
+        print(f"\nGroup {group + 1}:")
+        for file, chapter in files:
+            print(f"  - {file} (Suggested chapter: {chapter if chapter else 'Unknown'})")
 
 #database functionality
 def create_database():
@@ -178,20 +214,7 @@ def extract_chapter_number(filename):
 def read_directory_contents(directory):
     return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
 
-def group_files_by_creation_date(directory, files):
-    groups = defaultdict(list)
-    for file in files:
-        creation_time = os.path.getctime(os.path.join(directory, file))
-        date = datetime.fromtimestamp(creation_time).date()
-        chapter = extract_chapter_number(file)
-        groups[date].append((file, chapter))
-    return groups
 
-def show_groups(groups):
-    for date, files in groups.items():
-        print(f"\nGroup for {date}:")
-        for file, chapter in files:
-            print(f"  - {file} (Suggested chapter: {chapter if chapter else 'Unknown'})")
 
 #Modified for adding png, webp, pdf preview functionality.
 def get_chapter_assignments(groups, media_dir):
@@ -240,8 +263,8 @@ def main():
     # Step 1: Read directory contents
     files = read_directory_contents(media_dir)
     
-    # Step 2: Group files by creation date and extract chapter information
-    groups = group_files_by_creation_date(media_dir, files)
+    # Step 2: Group files by creation time
+    groups = group_files_by_creation_time(media_dir, files)
     
     # Step 3: Show groups to user
     show_groups(groups)
