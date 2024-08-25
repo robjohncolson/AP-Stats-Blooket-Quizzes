@@ -1,0 +1,10 @@
+,,,,,,,
+,,,,,,,
+1,Check that a scatterplot of values against predictions has a linear pattern with no obvious deviations.,Straight Enough Condition,Residual standard deviation,Random Residuals Condition,Standard error for the slope,20,1
+2,Assume that the data points are not influenced by each other.,Independence Assumption,Standard error for the slope,Straight Enough Condition,Nearly Normal Condition,20,1
+3,Ensure that data comes from a randomly selected sample of the population.,Randomization Condition,Does the Plot Thicken? Condition,Independence Assumption,Nearly Normal Condition,20,1
+4,Check for any patterns or trends in the residuals that suggest a problem.,Random Residuals Condition,Randomization Condition,Independence Assumption,Does the Plot Thicken? Condition,20,1
+5,"Examine if the scatterplot shows a consistent spread across the range of variables, with no increasing spread.",Does the Plot Thicken? Condition,Random Residuals Condition,Independence Assumption,Residual standard deviation,20,1
+6,Assess whether the residuals follow a normal distribution.,Nearly Normal Condition,Straight Enough Condition,Standard error for the slope,Independence Assumption,20,1
+7,Measure the spread of the data around the regression line.,Residual standard deviation,Randomization Condition,Standard error for the slope,Does the Plot Thicken? Condition,20,1
+8,Estimate the standard deviation of the sampling distribution for slopes of regression lines.,Standard error for the slope,Random Residuals Condition,Randomization Condition,Residual standard deviation,20,1

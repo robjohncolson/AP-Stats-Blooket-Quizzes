@@ -1,0 +1,16 @@
+﻿"Blooket
+Import Template",Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7
+Question #,Question Text,Answer 1,Contingency table,Segmented bar chart,Categorical data condition,"Time Limit (sec)
+(Max: 300 seconds)","Correct Answer(s)
+(Only include Answer #)"
+2,"This quantifies how outcomes are spread across different possible results, focusing on their frequency or proportion.",Distribution,Pie chart,Area principle,Simpson’s paradox,20,1
+3,"This principle asserts that in visual representations of data, the area dedicated to each segment should correspond to its statistical importance.",Area principle,Distribution,Bar chart (Relative frequency bar chart),Pie chart,20,1
+4,This graphical representation of statistical data shows bars whose size indicates the count or proportion of observations in each category.,Bar chart (Relative frequency bar chart),Frequency table (Relative frequency table),Pie chart,Segmented bar chart,20,1
+5,This circular diagram divides a whole into slices to represent proportional parts of a total.,Pie chart,Simpson’s paradox,Frequency table (Relative frequency table),Distribution,20,1
+6,This principle is specifically applicable when working with non-numerical data to ensure that analysis techniques are suitably matched.,Categorical data condition,Conditional distribution,Contingency table,Simpson’s paradox,20,1
+7,"This table format allows for the examination of how samples distribute across multiple categories, possibly revealing patterns across variables.",Contingency table,Frequency table (Relative frequency table),Categorical data condition,Pie chart,20,1
+8,"This refers to the totals that can be seen at the edges of a table, focusing on the distribution of a single variable.",Marginal distribution,Distribution,Pie chart,Area principle,20,1
+9,"This examines how a variable behaves within a specific subset of data, offering insights into group-specific trends.",Conditional distribution,Simpson’s paradox,Bar chart (Relative frequency bar chart),Distribution,20,1
+10,This term describes a scenario where the analysis of one variable does not vary by different groups of another variable.,Independence,Distribution,Frequency table (Relative frequency table),Pie chart,20,1
+11,"This type of chart illustrates how categories are broken down into sub-categories, providing a visual comparison of proportions.",Segmented bar chart,Categorical data condition,Distribution,Marginal distribution,20,1
+12,This phenomenon occurs when combined group data reveal trends that differ from those observed within individual groups.,Simpson’s paradox,Marginal distribution,Independence,Categorical data condition,20,1

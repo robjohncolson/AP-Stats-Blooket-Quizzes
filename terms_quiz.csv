@@ -1,0 +1,12 @@
+,,,,,,,
+,,,,,,,
+1,A variable that can take on various numeric values due to some random event.,Random variable,Addition Rule for Variances,Addition Rule for Expected Values of Random Variables,Expected value,20,1
+2,A variable that can take on a finite number of distinct outcomes.,Discrete random variable,Addition Rule for Expected Values of Random Variables,Expected value,Continuous random variable,20,1
+3,A variable that can take any numeric value within an interval of values.,Continuous random variable,Expected value,Addition Rule for Variances,Probability model,20,1
+4,A function that associates a probability with each value of a variable.,Probability model,Variance,Addition Rule for Variances,Continuous random variable,20,1
+5,"The long-run average value of a variable, calculated by summing the products of variable values and probabilities.",Expected value,Continuous random variable,Random variable,Addition Rule for Variances,20,1
+6,The expected value of the squared deviation from the mean of a variable.,Variance,Standard deviation,Probability model,Addition Rule for Expected Values of Random Variables,20,1
+7,"The square root of the variance, describing the spread of the variable.",Standard deviation,Addition Rule for Variances,Addition Rule for Expected Values of Random Variables,Probability model,20,1
+8,Adjusting a variable by adding or multiplying by a constant affects its mean and variance.,Changing a random variable by a constant,Addition Rule for Expected Values of Random Variables,Continuous random variable,Standard deviation,20,1
+9,The expected value of the sum of two variables is the sum of their expected values.,Addition Rule for Expected Values of Random Variables,Discrete random variable,Changing a random variable by a constant,Random variable,20,1
+10,"If two variables are independent, the variance of their sum is the sum of their variances.",Addition Rule for Variances,Variance,Random variable,Probability model,20,1

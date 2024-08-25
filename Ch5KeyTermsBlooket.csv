@@ -1,0 +1,7 @@
+﻿Column A,Column B,Column C,Column D,Column E,Column F,Column G,Column H
+1,A central box with whiskers that extend to the non-outlying data values.,Boxplot,Timeplot,Outlier,Comparing Distributions,20 seconds,1
+2,Any point more than 1.5 IQR from either end of the box.,Outlier,Far Outlier,Timeplot,Comparing Boxplots,20 seconds,1
+3,A point more than 3.0 IQR from either end of the box.,Far Outlier,Boxplot,Comparing Distributions,Timeplot,20 seconds,1
+4,"Consider shape, center, and spread.",Comparing Distributions,Comparing Boxplots,Far Outlier,Outlier,20 seconds,1
+5,"Compare shapes, medians, IQRs, and check for possible outliers.",Comparing Boxplots,Outlier,Comparing Boxplots,Far Outlier,20 seconds,1
+6,"Displays data that change over time, often with lines to show trends.",Timeplot,Comparing Distributions,Boxplot,Outlier,20 seconds,1

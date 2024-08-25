@@ -1,0 +1,7 @@
+,,,,,,,
+,,,,,,,
+1,"A family of probability distributions characterized by a shape that is unimodal, symmetric, and has heavier tails and a narrower center compared to a common probability model. As the parameter that affects the spread increases, these distributions resemble a well-known bell curve.",Student's t-distribution,One-sample t-test for the mean,Nearly Normal Condition,Degrees of freedom,20,1
+2,"For a specific probability model, this refers to a parameter that is determined by subtracting one from the total number of observations in the sample.",Degrees of freedom,One-sample t-interval for the mean,Student's t-distribution,One-sample t-test for the mean,20,1
+3,"A requirement that checks if the data's shape is approximately unimodal and symmetric, suggesting it could plausibly come from a population that follows a certain probability distribution.",Nearly Normal Condition,One-sample t-test for the mean,Student's t-distribution,One-sample t-interval for the mean,20,1
+4,"A statistical method used to estimate the population mean, considering sample data and a specific probability distribution to calculate an interval.",One-sample t-interval for the mean,Student's t-distribution,One-sample t-test for the mean,Degrees of freedom,20,1
+5,"A statistical test used to evaluate if the mean of a sample is significantly different from a hypothesized value, employing a specific probability distribution for the calculation.",One-sample t-test for the mean,Nearly Normal Condition,One-sample t-interval for the mean,Student's t-distribution,20,1

@@ -1,0 +1,9 @@
+,,,,,,,
+,,,,,,,
+1,"When a test result's P-value is smaller than the predefined threshold, it suggests the result is unlikely to occur by random chance.",Statistically Significant,Power,Alpha Level,Type I Error,20,1
+2,The cutoff point that determines when to reject a null hypothesis based on the test's P-value.,Alpha Level,Type I Error,Type II Error,Statistically Significant,20,1
+3,"Another name for the alpha level, often mentioned as the percentage significance in hypothesis testing.",Significance Level,Effect Size,Statistically Significant,Power,20,1
+4,The amount of difference between the null hypothesis value and the true value of a model parameter.,Effect Size,Type I Error,Type II Error,Power,20,1
+5,"The mistake of rejecting a true null hypothesis, often described as a false positive.",Type I Error,Significance Level,Effect Size,Type II Error,20,1
+6,"The mistake of not rejecting a false null hypothesis, often referred to as a false negative.",Type II Error,Effect Size,Type I Error,Significance Level,20,1
+7,"The probability that a hypothesis test will correctly reject a false null hypothesis, increasing with the effect size.",Power,Alpha Level,Effect Size,Type II Error,20,1

@@ -1,0 +1,7 @@
+,,,,,,,
+,,,,,,,
+1,Predicting values far from the ones used to find the linear model equation is unsafe and should not be trusted.,Extrapolation,Leverage,Influential point,Outlier,20,1
+2,"A data point that stands away from others, particularly in regression, can have a large residual or high leverage.",Outlier,Extrapolation,Lurking variable,Influential point,20,1
+3,"Data points with x-values far from the mean of X exert leverage on a linear model, influencing the slope and intercept.",Leverage,Influential point,Outlier,Extrapolation,20,1
+4,"A data point that, when omitted, results in a regression model with a significantly different slope.",Influential point,Outlier,Extrapolation,Lurking variable,20,1
+5,"A variable not part of the model but affects how the variables appear to be related, complicating causal inference.",Lurking variable,Leverage,Extrapolation,Influential point,20,1

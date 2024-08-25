@@ -1,0 +1,8 @@
+,,,,,,,
+,,,,,,,
+1,"A sequence of experiments where each experiment has exactly two possible outcomes. The probability of success is constant, and the experiments are independent.",Bernoulli trials,Statistically significant,Success/Failure Condition,Binomial probability model,20,1
+2,"When sampling without replacement, trials can be considered independent if the sample size is less than 10% of the population.",10% Condition,Geometric probability model,Statistically significant,Binomial probability model,20,1
+3,A model appropriate for a random variable that counts the number of trials until the first success in a series of Bernoulli trials.,Geometric probability model,Binomial probability model,Success/Failure Condition,Bernoulli trials,20,1
+4,A model appropriate for a random variable that counts the number of successes in a fixed number of Bernoulli trials.,Binomial probability model,Success/Failure Condition,Geometric probability model,Statistically significant,20,1
+5,"For a Normal model to approximate a Binomial model well, at least 10 successes and 10 failures are expected.",Success/Failure Condition,10% Condition,Bernoulli trials,Geometric probability model,20,1
+6,The results of a study are considered statistically significant if the probability that they occurred by chance is very low.,Statistically significant,Success/Failure Condition,10% Condition,Geometric probability model,20,1

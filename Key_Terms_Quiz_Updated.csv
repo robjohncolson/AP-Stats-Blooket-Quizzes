@@ -1,0 +1,12 @@
+,,,,,,,
+,,,,,,,
+1,An equation or formula that simplifies and represents reality.,Model,Residuals,Regression to the mean,Standard error (S.),20,1
+2,"An equation of a line. To interpret a linear model, the variables (along with their W's) and their units must be known.",Linear model,Residuals,Slope,Predicted value,20,1
+3,"The value found for a given x-value in the data, calculated by substituting the x-value into the regression equation. These values lie exactly on the fitted line.",Predicted value,Regression to the mean,Regression line (Line of best fit),Intercept,20,1
+4,Differences between observed data values and the corresponding predicted values from the regression model.,Residuals,Slope,Regression line (Line of best fit),Standard error (S.),20,1
+5,A criterion that specifies the unique line minimizing the variance of the residuals or the sum of the squared residuals.,Least squares,Residuals,Slope,Intercept,20,1
+6,"The tendency for each predicted value to be closer to its mean than the corresponding x-value is to its mean, due to the correlation being less than 1.0.",Regression to the mean,Linear model,Least squares,Slope,20,1
+7,The particular linear equation that satisfies the least squares criterion.,Regression line (Line of best fit),Predicted value,Least squares,Slope,20,1
+8,"The value in 'y-units per x-unit,' representing changes in predicted values of y corresponding to changes of one unit in x.",Slope,Linear model,Predicted value,Model,20,1
+9,"The y-value when x is 0, providing a starting value in y-units.",Intercept,Linear model,Slope,Regression to the mean,20,1
+10,"The standard deviation of the residuals, used to describe residuals under certain conditions.",Standard error (S.),Predicted value,Slope,Residuals,20,1

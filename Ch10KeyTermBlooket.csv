@@ -1,0 +1,8 @@
+,,,,,,,
+,,,,,,,
+1,"An outcome is random if we know the possible values it can have, but not which particular value it takes.",Random,Response variable,Simulation,Generating random numbers,20,3
+2,Random numbers are hard to generate. Several Internet sites offer an unlimited supply of equally likely random values.,Generating random numbers,Simulation,Trial,Simulation component,20,3
+3,A simulation models a real-world situation by using random-digit outcomes to mimic the uncertainty of a response variable of interest.,Simulation,Generating random numbers,Trial,Response variable,20,3
+4,The sequence of several components representing events that we are pretending will take place.,Trial,Simulation component,Random,Simulation,20,3
+5,A component uses equally likely random digits to model simple random occurrences whose outcomes may not be equally likely.,Simulation component,Generating random numbers,Trial,Simulation,20,3
+6,Values of the response variable record the results of each trial with respect to what we were interested in.,Response variable,Simulation,Trial,Simulation component,20,3

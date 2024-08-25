@@ -1,0 +1,6 @@
+,,,,,,,
+,,,,,,,
+1,"These methods allow conclusions to be drawn about the difference between the means of two independent groups, making few assumptions about the underlying populations.",Two-sample t methods,Pooled-t methods,Two-sample t-test for the difference between means,Two-sample t-interval for the difference between means,20,1
+2,A confidence interval is calculated for the difference between the means of two independent groups.,Two-sample t-interval for the difference between means,Two-sample t-test for the difference between means,Two-sample t methods,Pooled-t methods,20,1
+3,A hypothesis test to determine if there is a difference between the means of two independent groups.,Two-sample t-test for the difference between means,Two-sample t methods,Pooled-t methods,Two-sample t-interval for the difference between means,20,1
+4,These methods provide inferences about the difference between means assuming equal standard deviations in both populations.,Pooled-t methods,Two-sample t-interval for the difference between means,Two-sample t-test for the difference between means,Two-sample t methods,20,1

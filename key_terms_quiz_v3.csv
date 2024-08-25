@@ -1,0 +1,6 @@
+1,"An outcome where the possible values are known, but the specific value it will take is not.",Random,Response variable,Generating random numbers,Simulation component,20,1
+2,"The process of creating values that are equally likely to occur, often used in simulations.",Generating random numbers,Simulation component,Trial,Random,20,1
+3,A method to model real-world situations by using random outcomes to mimic uncertainty.,Simulation,Generating random numbers,Simulation component,Random,20,1
+4,A sequence of events representing a simulated scenario to observe possible outcomes.,Trial,Response variable,Generating random numbers,Simulation component,20,1
+5,A part of a simulation using random digits to model simple random occurrences.,Simulation component,Response variable,Simulation,Trial,20,1
+6,"A variable that records the result of each trial in a simulation, reflecting the aspect of interest.",Response variable,Generating random numbers,Random,Simulation component,20,1

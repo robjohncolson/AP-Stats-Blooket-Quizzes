@@ -1,0 +1,7 @@
+,,,,,,,
+,,,,,,,
+1,The probability of A or B is found by adding the probabilities of A and B and then subtracting the probability of both A and B occurring together.,General Addition Rule,Independence Assumption,Conditional Probability,Legitimate Probability Assignment,20,1
+2,The probability of event B occurring given that event A has already occurred.,Conditional Probability,Legitimate Probability Assignment,Multiplication Rule,Independence Assumption,20,1
+3,"An assignment where each probability is between 0 and 1, and the sum of all probabilities equals 1.",Legitimate Probability Assignment,General Addition Rule,Independence Assumption,Multiplication Rule,20,1
+4,"If A and B are independent events, the probability of both A and B occurring together is the product of their individual probabilities.",Multiplication Rule,General Addition Rule,Independence Assumption,Legitimate Probability Assignment,20,1
+5,"The assumption that two events are independent, meaning the occurrence of one does not affect the occurrence of the other.",Independence Assumption,Multiplication Rule,Conditional Probability,Legitimate Probability Assignment,20,1

@@ -1,0 +1,9 @@
+,,,,,,,
+,,,,,,,
+1,The conditional probability of observing a value for a test statistic at least as far from the hypothesized value as the statistic value actually observed if the null hypothesis is true.,P-value,Alternative hypothesis,Null hypothesis,One-sided alternative (One-tailed alternative),20,1
+2,A test of the null hypothesis that the proportion of a single sample equals a specified value.,One-proportion z-test,P-value,Two-sided alternative (Two-tailed alternative),Null hypothesis,20,1
+3,The difference between the null hypothesis value and the actual value of population parameter.,Effect size,Null hypothesis,One-sided alternative (One-tailed alternative),Two-sided alternative (Two-tailed alternative),20,1
+4,"The claim being assessed in a hypothesis test, usually stating 'no effect' or 'no difference'.",Null hypothesis,Effect size,Two-sided alternative (Two-tailed alternative),Null hypothesis,20,1
+5,The hypothesis proposing what should be concluded if the null hypothesis is unlikely.,Alternative hypothesis,Effect size,One-proportion z-test,One-sided alternative (One-tailed alternative),20,1
+6,An alternative hypothesis when interested in deviations in either direction away from the hypothesized parameter value.,Two-sided alternative (Two-tailed alternative),Effect size,Alternative hypothesis,P-value,20,1
+7,An alternative hypothesis when interested in deviations in only one direction away from the hypothesized parameter value.,One-sided alternative (One-tailed alternative),One-proportion z-test,Effect size,P-value,20,1
