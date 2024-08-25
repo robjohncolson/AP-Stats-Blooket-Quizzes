@@ -12,6 +12,11 @@ __purpose__ = "Organize files in a directory by chapter"
 #We will then show the user the organization of the files.
 #We will ask the user to confirm the organization of the files, each step of the way.
 
+#database functionality
+import sqlite3
+import pytesseract
+from pdf2image import convert_from_path
+
 #xlsx and csv preview functionality.
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,6 +33,107 @@ import os
 import shutil
 from datetime import datetime
 from collections import defaultdict
+
+
+#database functionality
+def create_database():
+    conn = sqlite3.connect('file_chapters.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS file_chapters
+                 (filename TEXT PRIMARY KEY, chapter INTEGER)''')
+    conn.commit()
+    return conn
+
+def get_chapter_from_db(conn, filename):
+    c = conn.cursor()
+    c.execute("SELECT chapter FROM file_chapters WHERE filename = ?", (filename,))
+    result = c.fetchone()
+    return result[0] if result else None
+
+def save_chapter_to_db(conn, filename, chapter):
+    c = conn.cursor()
+    c.execute("INSERT OR REPLACE INTO file_chapters (filename, chapter) VALUES (?, ?)",
+              (filename, chapter))
+    conn.commit()
+
+def extract_text_from_image(file_path):
+    try:
+        return pytesseract.image_to_string(Image.open(file_path))
+    except Exception as e:
+        print(f"Error extracting text from image {file_path}: {str(e)}")
+        return ""
+
+def extract_text_from_pdf(file_path):
+    try:
+        pages = convert_from_path(file_path, first_page=1, last_page=2)
+        text = ""
+        for page in pages:
+            text += pytesseract.image_to_string(page)
+        return text
+    except Exception as e:
+        print(f"Error extracting text from PDF {file_path}: {str(e)}")
+        return ""
+
+def suggest_chapter(file_path):
+    file_extension = os.path.splitext(file_path)[1].lower()
+    content = ""
+    
+    if file_extension in ['.png', '.jpg', '.jpeg', '.webp']:
+        content = extract_text_from_image(file_path)
+    elif file_extension == '.pdf':
+        content = extract_text_from_pdf(file_path)
+    elif file_extension in ['.csv', '.xlsx', '.txt']:
+        try:
+            with open(file_path, 'r') as file:
+                content = file.read()
+        except Exception as e:
+            print(f"Error reading file {file_path}: {str(e)}")
+    
+    # Simple keyword matching (can be expanded)
+    for i in range(1, 27):
+        if f"chapter {i}" in content.lower() or f"ch {i}" in content.lower():
+            return i
+    
+    return None
+
+def get_chapter_assignments(groups, media_dir):
+    assignments = {}
+    conn = create_database()
+    
+    for date, files in groups.items():
+        print(f"\nAssigning chapters for group {date}:")
+        for file, suggested_chapter in files:
+            file_path = os.path.join(media_dir, file)
+            db_chapter = get_chapter_from_db(conn, file)
+            
+            if db_chapter:
+                assignments[file] = db_chapter
+                print(f"Chapter {db_chapter} assigned to {file} (from database)")
+                continue
+            
+            if suggested_chapter is None:
+                suggested_chapter = suggest_chapter(file_path)
+            
+            generate_preview(file_path)
+            
+            while True:
+                try:
+                    if suggested_chapter:
+                        chapter = input(f"Enter chapter number (1-26) for {file} [Suggested: {suggested_chapter}]: ")
+                        chapter = int(suggested_chapter) if chapter == '' else int(chapter)
+                    else:
+                        chapter = int(input(f"Enter chapter number (1-26) for {file}: "))
+                    if 1 <= chapter <= 26:
+                        assignments[file] = chapter
+                        save_chapter_to_db(conn, file, chapter)
+                        break
+                    else:
+                        print("Please enter a number between 1 and 26.")
+                except ValueError:
+                    print("Please enter a valid number.")
+    
+    conn.close()
+    return assignments
 
 #For adding png, webp, pdf preview functionality.
 def generate_preview(file_path):
