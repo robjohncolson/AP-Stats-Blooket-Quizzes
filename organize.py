@@ -114,6 +114,9 @@ def save_chapter_to_db(conn, filename, chapter):
 def extract_text_from_image(file_path):
     try:
         return pytesseract.image_to_string(Image.open(file_path))
+    except pytesseract.TesseractNotFoundError:
+        print("Tesseract is not installed or not in PATH. OCR functionality is disabled.")
+        return ""
     except Exception as e:
         print(f"Error extracting text from image {file_path}: {str(e)}")
         return ""
@@ -143,6 +146,10 @@ def suggest_chapter(file_path):
                 content = file.read()
         except Exception as e:
             print(f"Error reading file {file_path}: {str(e)}")
+    
+    # If content extraction failed, try to extract from filename
+    if not content:
+        content = os.path.basename(file_path)
     
     # Simple keyword matching (can be expanded)
     for i in range(1, 27):
@@ -194,22 +201,28 @@ def get_chapter_assignments(groups, media_dir):
 def generate_preview(file_path):
     file_extension = os.path.splitext(file_path)[1].lower()
     
-    if file_extension in ['.webp', '.png']:
-        with Image.open(file_path) as img:
+    if file_extension in ['.webp', '.png', '.jpg', '.jpeg']:
+        try:
+            with Image.open(file_path) as img:
+                plt.figure(figsize=(5, 5))
+                plt.imshow(img)
+                plt.axis('off')
+                plt.show()
+        except Exception as e:
+            print(f"Error previewing image {file_path}: {str(e)}")
+    elif file_extension == '.pdf':
+        try:
+            doc = fitz.open(file_path)
+            page = doc.load_page(0)  # Load the first page
+            pix = page.get_pixmap()
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             plt.figure(figsize=(5, 5))
             plt.imshow(img)
             plt.axis('off')
             plt.show()
-    elif file_extension == '.pdf':
-        doc = fitz.open(file_path)
-        page = doc.load_page(0)  # Load the first page
-        pix = page.get_pixmap()
-        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-        plt.figure(figsize=(5, 5))
-        plt.imshow(img)
-        plt.axis('off')
-        plt.show()
-        doc.close()
+            doc.close()
+        except Exception as e:
+            print(f"Error previewing PDF {file_path}: {str(e)}")
     elif file_extension in ['.csv', '.xlsx']:
         try:
             if file_extension == '.csv':
