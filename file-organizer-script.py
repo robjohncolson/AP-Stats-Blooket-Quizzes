@@ -35,5 +35,5 @@ def organize_files(source_folder):
             print(f"Moved {file} to {chapter_folder}")
 
 # Usage
-source_folder = r"C:\path\to\your\folder"  # Replace with your folder path
+source_folder = r"C:\Users\ColsonR\OneDrive - Lynn Public Schools\Desktop\AP Stats Key Term Blooket Media"  # Replace with your folder path
 organize_files(source_folder)
