@@ -12,11 +12,42 @@ __purpose__ = "Organize files in a directory by chapter"
 #We will then show the user the organization of the files.
 #We will ask the user to confirm the organization of the files, each step of the way.
 
+#For adding png, webp, pdf preview functionality.
+import io
+from PIL import Image
+import fitz  # PyMuPDF library for PDF handling
+import matplotlib.pyplot as plt
+#For the main functionality.
 import re
 import os
 import shutil
 from datetime import datetime
 from collections import defaultdict
+
+#For adding png, webp, pdf preview functionality.
+def generate_preview(file_path):
+    file_extension = os.path.splitext(file_path)[1].lower()
+    
+    if file_extension in ['.webp', '.png']:
+        with Image.open(file_path) as img:
+            plt.figure(figsize=(5, 5))
+            plt.imshow(img)
+            plt.axis('off')
+            plt.show()
+    elif file_extension == '.pdf':
+        doc = fitz.open(file_path)
+        page = doc.load_page(0)  # Load the first page
+        pix = page.get_pixmap()
+        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+        plt.figure(figsize=(5, 5))
+        plt.imshow(img)
+        plt.axis('off')
+        plt.show()
+        doc.close()
+    else:
+        print(f"Preview not available for {file_path}")
+
+#For the main functionality.
 
 def extract_chapter_number(filename):
     match = re.search(r'ch(?:apter)?[_\s]?(\d+)', filename, re.IGNORECASE)
@@ -40,11 +71,14 @@ def show_groups(groups):
         for file, chapter in files:
             print(f"  - {file} (Suggested chapter: {chapter if chapter else 'Unknown'})")
 
+#Modified for adding png, webp, pdf preview functionality.
 def get_chapter_assignments(groups):
     assignments = {}
     for date, files in groups.items():
         print(f"\nAssigning chapters for group {date}:")
         for file, suggested_chapter in files:
+            file_path = os.path.join(media_dir, file)
+            generate_preview(file_path)
             while True:
                 try:
                     if suggested_chapter:
@@ -61,15 +95,13 @@ def get_chapter_assignments(groups):
                     print("Please enter a valid number.")
     return assignments
 
-def move_files_to_chapters(directory, groups, assignments):
-    for date, files in groups.items():
-        chapter = assignments[date]
+def move_files_to_chapters(directory, assignments):
+    for file, chapter in assignments.items():
         chapter_dir = os.path.join(directory, f"Ch{chapter}")
         os.makedirs(chapter_dir, exist_ok=True)
-        for file in files:
-            src = os.path.join(directory, file)
-            dst = os.path.join(chapter_dir, file)
-            shutil.move(src, dst)
+        src = os.path.join(directory, file)
+        dst = os.path.join(chapter_dir, file)
+        shutil.move(src, dst)
 
 def show_organization_result(directory):
     for chapter in range(1, 27):
@@ -86,7 +118,7 @@ def main():
     # Step 1: Read directory contents
     files = read_directory_contents(media_dir)
     
-    # Step 2: Group files by creation date
+    # Step 2: Group files by creation date and extract chapter information
     groups = group_files_by_creation_date(media_dir, files)
     
     # Step 3: Show groups to user
@@ -96,7 +128,7 @@ def main():
     assignments = get_chapter_assignments(groups)
     
     # Step 5: Move files to appropriate chapters
-    move_files_to_chapters(media_dir, groups, assignments)
+    move_files_to_chapters(media_dir, assignments)
     
     # Step 6: Show organization result
     show_organization_result(media_dir)
