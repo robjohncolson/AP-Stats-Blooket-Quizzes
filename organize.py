@@ -12,6 +12,10 @@ __purpose__ = "Organize files in a directory by chapter"
 #We will then show the user the organization of the files.
 #We will ask the user to confirm the organization of the files, each step of the way.
 
+
+#database management
+import shutil
+
 #for adding a finer grained control of time so that files are grouped with more resolution.
 from datetime import datetime, timedelta
 
@@ -37,6 +41,21 @@ import shutil
 from datetime import datetime
 from collections import defaultdict
 
+
+#database management
+def manage_database():
+    db_file = 'file_chapters.db'
+    if os.path.exists(db_file):
+        choice = input("A previous database file exists. Do you want to keep it? (y/n): ")
+        if choice.lower() != 'y':
+            backup_file = f'{db_file}.bak'
+            shutil.copy2(db_file, backup_file)
+            os.remove(db_file)
+            print(f"Previous database backed up as {backup_file} and new database created.")
+        else:
+            print("Using existing database.")
+    else:
+        print("No existing database found. Creating a new one.")
 
 
 #fine grained time based grouping of files.
@@ -216,28 +235,54 @@ def read_directory_contents(directory):
 
 
 
-#Modified for adding png, webp, pdf preview functionality.
+#Modified for adding png, webp, pdf preview functionality. *(now with delete!)
+
 def get_chapter_assignments(groups, media_dir):
     assignments = {}
-    for date, files in groups.items():
-        print(f"\nAssigning chapters for group {date}:")
+    conn = create_database()
+    
+    for group, files in groups.items():
+        print(f"\nAssigning chapters for group {group + 1}:")
         for file, suggested_chapter in files:
             file_path = os.path.join(media_dir, file)
+            db_chapter = get_chapter_from_db(conn, file)
+            
+            if db_chapter:
+                assignments[file] = db_chapter
+                print(f"Chapter {db_chapter} assigned to {file} (from database)")
+                continue
+            
+            if suggested_chapter is None:
+                suggested_chapter = suggest_chapter(file_path)
+            
             generate_preview(file_path)
+            
             while True:
                 try:
                     if suggested_chapter:
-                        chapter = input(f"Enter chapter number (1-26) for {file} [Suggested: {suggested_chapter}]: ")
-                        chapter = int(suggested_chapter) if chapter == '' else int(chapter)
+                        choice = input(f"Enter chapter number (1-26) for {file}, 'd' to delete, or press Enter for [Suggested: {suggested_chapter}]: ")
                     else:
-                        chapter = int(input(f"Enter chapter number (1-26) for {file}: "))
+                        choice = input(f"Enter chapter number (1-26) for {file}, or 'd' to delete: ")
+                    
+                    if choice.lower() == 'd':
+                        os.remove(file_path)
+                        print(f"File {file} has been deleted.")
+                        break
+                    elif choice == '' and suggested_chapter:
+                        chapter = suggested_chapter
+                    else:
+                        chapter = int(choice)
+                    
                     if 1 <= chapter <= 26:
                         assignments[file] = chapter
+                        save_chapter_to_db(conn, file, chapter)
                         break
                     else:
                         print("Please enter a number between 1 and 26.")
                 except ValueError:
-                    print("Please enter a valid number.")
+                    print("Please enter a valid number or 'd' to delete.")
+    
+    conn.close()
     return assignments
 
 def move_files_to_chapters(directory, assignments):
@@ -258,8 +303,10 @@ def show_organization_result(directory):
                 print(f"  - {file}")
 
 def main():
-    media_dir = "media"
+    manage_database()
     
+    media_dir = "media"
+        
     # Step 1: Read directory contents
     files = read_directory_contents(media_dir)
     
