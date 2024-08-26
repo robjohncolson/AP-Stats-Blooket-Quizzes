@@ -72,7 +72,6 @@ def manage_database():
         print("No existing database found. Creating a new one.")
 
 
-
 def group_files_by_creation_time(directory, files, target_groups=24):
     file_times = []
     for file in files:
@@ -101,10 +100,7 @@ def group_files_by_creation_time(directory, files, target_groups=24):
             current_group += 1
             current_group_start = time
         
-        if current_group < target_groups:
-            groups[current_group].append(file)
-        else:
-            groups['undetermined'].append(file)
+        groups[current_group].append(file)
     
     return groups
 
@@ -114,9 +110,11 @@ def show_groups(groups):
             print("\nUndetermined Group:")
         else:
             print(f"\nGroup {group + 1}:")
-        for file, time in files:
+        for file in files:
+            file_path = os.path.join("media", file)  # Assuming "media" is the directory
+            modification_time = datetime.fromtimestamp(os.path.getmtime(file_path))
             print(f"  - {file}")
-            print(f"    (Last modified: {time.strftime('%Y-%m-%d %H:%M:%S')})")
+            print(f"    (Last modified: {modification_time.strftime('%Y-%m-%d %H:%M:%S')})")
 
 #database functionality
 def create_database():
