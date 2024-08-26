@@ -187,34 +187,41 @@ def get_chapter_assignments(groups, media_dir, conn):
             file_path = os.path.join(media_dir, file)
             db_chapter, db_unsure = get_chapter_from_db(conn, file)
             
-            
-            if db_chapter:
-                assignments[file] = db_chapter
-                print(f"Chapter {db_chapter} assigned to {file} (from database)")
-                continue
-            
-            if suggested_chapter is None:
-                suggested_chapter = suggest_chapter(file_path)
+            if db_chapter is not None:
+                if db_unsure:
+                    print(f"File {file} was previously marked as unsure.")
+                    generate_preview(file_path)
+                else:
+                    assignments[file] = int(db_chapter)  # Ensure it's an integer
+                    print(f"Chapter {db_chapter} assigned to {file} (from database)")
+                    continue
             
             generate_preview(file_path)
             
             while True:
                 try:
-                    if suggested_chapter:
-                        chapter = input(f"Enter chapter number (1-26) for {file} [Suggested: {suggested_chapter}]: ")
-                        chapter = int(suggested_chapter) if chapter == '' else int(chapter)
+                    choice = input(f"Enter chapter number (1-26) for {file}, 'u' for unsure, or 'd' to delete: ")
+                    
+                    if choice.lower() == 'd':
+                        os.remove(file_path)
+                        print(f"File {file} has been deleted.")
+                        break
+                    elif choice.lower() == 'u':
+                        save_chapter_to_db(conn, file, None, unsure=1)
+                        print(f"File {file} marked as unsure.")
+                        break
                     else:
-                        chapter = int(input(f"Enter chapter number (1-26) for {file}: "))
+                        chapter = int(choice)
+                    
                     if 1 <= chapter <= 26:
                         assignments[file] = chapter
-                        save_chapter_to_db(conn, file, chapter)
+                        save_chapter_to_db(conn, file, chapter, unsure=0)
                         break
                     else:
                         print("Please enter a number between 1 and 26.")
                 except ValueError:
-                    print("Please enter a valid number.")
+                    print("Please enter a valid number, 'u' for unsure, or 'd' to delete.")
     
-    conn.close()
     return assignments
 
 #For adding png, webp, pdf preview functionality.
@@ -334,12 +341,14 @@ def get_chapter_assignments(groups, media_dir, conn):
 
 def move_files_to_chapters(media_dir, assignments):
     for file, chapter in assignments.items():
-        if chapter is not None:  # Skip unsure files
+        if chapter is not None and isinstance(chapter, int):  # Ensure chapter is an integer
             chapter_dir = os.path.join(media_dir, f"Ch{chapter}")
             os.makedirs(chapter_dir, exist_ok=True)
             src = os.path.join(media_dir, file)
             dst = os.path.join(chapter_dir, file)
             shutil.move(src, dst)
+        else:
+            print(f"Skipping file {file} due to invalid chapter assignment: {chapter}")
 
 def show_organization_result(directory):
     for chapter in range(1, 27):
